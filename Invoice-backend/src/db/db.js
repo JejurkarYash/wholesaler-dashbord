@@ -16,7 +16,7 @@ const customerSchema = new Schema({
   contactNumber: { type: String, required: true },
 });
 
-const productSChema = new Schema({
+const productSchema = new Schema({
   name: { type: String, required: true },
   price: { type: Number, required: true },
   stock: { type: Number, required: true },
@@ -29,6 +29,7 @@ const allProductDetilsSchema = new Schema({
   color: String,
   size: String,
   price: { type: String, required: true },
+  status: { type: String, enum: ["available", "sold"] },
 });
 
 const vendorOrderSchema = new Schema({
@@ -38,7 +39,7 @@ const vendorOrderSchema = new Schema({
       orderId: { type: mongoose.Types.ObjectId, auto: true },
       productId: { type: mongoose.Types.ObjectId, ref: "Products" },
       totalQuantity: { type: Number, required: true },
-      deliverdQuantity: { type: Number, default: 0 },
+      deliveredQuantity: { type: Number, default: 0 },
       pendingQuantity: { type: Number, required: true },
       orderTotalPrice: { type: Number, require: true },
       orderDate: { type: Date, default: Date.now },
@@ -57,13 +58,13 @@ const customerOrderSchema = new Schema({
       orderId: { type: mongoose.Types.ObjectId, auto: true },
       productId: { type: mongoose.Types.ObjectId, ref: "Products" },
       totalQuantity: { type: Number, required: true },
-      deliverdQuantity: { type: Number, default: 0 },
+      deliveredQuantity: { type: Number, default: 0 },
       pendingQuantity: { type: Number, required: true },
       orderTotalPrice: { type: Number, require: true },
       orderDate: { type: Date, default: Date.now },
       productSerialNumbers: [
         {
-          serialNumber: { type: Number, require: true, uniqu: true },
+          serialNumber: { type: Number, require: true, unique: true },
         },
       ],
     },
@@ -75,22 +76,22 @@ const vendorInvoiceSchema = new Schema({
     {
       type: mongoose.Types.ObjectId,
       ref: "VenderOrders",
-      require: true,
+      required: true,
     },
   ],
   vendorId: {
     type: mongoose.Types.ObjectId,
     ref: "Vendors",
-    require: true,
+    required: true,
   },
   products: [
     {
       productId: {
         type: mongoose.Types.ObjectId,
         ref: "Products",
-        require: true,
+        required: true,
       },
-      quantity: { type: String, require: true },
+      quantity: { type: Number, require: true },
       price: { type: Number, require: true },
       total: { type: Number, require: true },
     },
@@ -104,22 +105,22 @@ const customerInvoiceSchema = new Schema({
     {
       type: mongoose.Types.ObjectId,
       ref: "VenderOrders",
-      require: true,
+      required: true,
     },
   ],
   customerId: {
     type: mongoose.Types.ObjectId,
     ref: "Customers",
-    require: true,
+    required: true,
   },
   products: [
     {
       productId: {
         type: mongoose.Types.ObjectId,
         ref: "Products",
-        require: true,
+        required: true,
       },
-      quantity: { type: String, require: true },
+      quantity: { type: Number, require: true },
       price: { type: Number, require: true },
       total: { type: Number, require: true },
     },
@@ -132,7 +133,7 @@ const customerInvoiceSchema = new Schema({
 // exporting all schema's
 export const CustomerModel = new model("Customers", customerSchema);
 export const VendorModel = new model("Vendors", vendorSchema);
-export const ProductModel = new model("Products", productSChema);
+export const ProductModel = new model("Products", productSchema);
 export const AllProductDetilsModel = new model(
   "AllProductDetails",
   allProductDetilsSchema
@@ -147,6 +148,6 @@ export const VendorInvoiceModel = new model(
   vendorInvoiceSchema
 );
 export const CustomerInvoiceModel = new model(
-  "VendorsInvoice",
+  "CustomerInvoice",
   customerInvoiceSchema
 );
